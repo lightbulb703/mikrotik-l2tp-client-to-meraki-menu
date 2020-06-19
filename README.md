@@ -15,7 +15,7 @@ to work (setup below).
 The script will check for an active VPN first, which must be disabled prior
 to enabling a new VPN.
 
-##Prerequisite setup
+## Prerequisite setup
 Common Settings (this should always be enabled, firewall rule preference may
   need to be adjusted):
 
@@ -57,7 +57,7 @@ Per Client Settings (firewall rule preference may need to be adjusted):
     /ip route add comment=CLIENTNAME disabled=yes distance=1 \
     dst-address=DSTADDRESS2 gateway=l2tp-out1 routing-mark=merakivpns
 
-##Sample Runs
+## Sample Runs
 Enable (detected no active VPNs):
 
     List of Meraki L2TP Clients
