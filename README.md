@@ -19,43 +19,52 @@ to enabling a new VPN.
 Common Settings (this should always be enabled, firewall rule preference may
   need to be adjusted):
 
+    # Meraki profile
     /ppp profile add name=meraki use-encryption=required use-ipv6=no \
-    use-mpls=no
+     use-mpls=no
+    # Set ipsec profile and proposal, 3des and aes128, group2 or group5
     /ip ipsec profile set [ find default=yes ] dh-group=modp1536,modp1024 \
-    lifetime=8h
+     lifetime=8h
     /ip ipsec proposal set [ find default=yes ] \
-    enc-algorithms=aes-128-cbc,3des lifetime=8h pfs-group=none
+     enc-algorithms=aes-128-cbc,3des lifetime=8h pfs-group=none
+    # Mark routing for traffic from only allowed sources
     /ip firewall mangle add action=mark-routing chain=prerouting \
-    comment="Leave this enabled always" new-routing-mark=merakivpns \
-    passthrough=yes src-address-list="Allowed To VPN"
+     comment="Leave this enabled always" new-routing-mark=merakivpns \
+     passthrough=yes src-address-list="Source VPN Addresses"
+    # Address List
+    # Sample of two shown below. Use as many or as few as needed.
+    /ip firewall address-list add address=LOCALADDRESS1 \
+     list="Source VPN Addresses"
+    /ip firewall address-list add address=LOCALADDRESS2 \
+     list="Source VPN Addresses"
+
 
 Per Client Settings (firewall rule preference may need to be adjusted):
 
+    # L2TP Client Setup, take note of the interface name
     /interface l2tp-client add allow=pap comment=CLIENTNAME \
-    connect-to=DESTINATION ipsec-secret=SECRET name=l2tp-out1 \
-    password=PASSWORD profile=meraki use-ipsec=yes \
-    user="DOMAIN\\user||user@domain.com||user"
+     connect-to=DESTINATION ipsec-secret=SECRET name=l2tp-out1 \
+     password=PASSWORD profile=meraki use-ipsec=yes \
+     user="DOMAIN\\user||user@domain.com||user"
     /interface l2tp-client disable name=l2tp-out1
 
-    # Sample of two shown below. Use as many or as few as needed.
-    /ip firewall address-list add address=LOCALADDRESS1 \
-    list="Source VPN Addresses"
-    /ip firewall address-list add address=LOCALADDRESS2 \
-    list="Source VPN Addresses"
-
+    # Address List
     # Sample of two shown below. Use as many or as few as needed.
     /ip firewall address-list add address=DSTADDRESS1 list=CLIENTNAME
     /ip firewall address-list add address=DSTADDRESS2 list=CLIENTNAME
 
+    # Firewall rule to NAT traffic for valid sources addresses to
+    # destination routes
     /ip firewall nat add action=masquerade chain=srcnat comment=CLIENTNAME \
-    disabled=yes dst-address-list=CLIENTNAME out-interface=l2tp-out1 \
-    src-address-list="Source VPN Addresses"
+     disabled=yes dst-address-list=CLIENTNAME out-interface=l2tp-out1 \
+     src-address-list="Source VPN Addresses"
 
+    # Routes
     # Sample of two shown below. Use as many or as few as needed.
     /ip route add comment=CLIENTNAME disabled=yes distance=1 \
-    dst-address=DSTADDRESS1 gateway=l2tp-out1 routing-mark=merakivpns
+     dst-address=DSTADDRESS1 gateway=l2tp-out1 routing-mark=merakivpns
     /ip route add comment=CLIENTNAME disabled=yes distance=1 \
-    dst-address=DSTADDRESS2 gateway=l2tp-out1 routing-mark=merakivpns
+     dst-address=DSTADDRESS2 gateway=l2tp-out1 routing-mark=merakivpns
 
 ## Sample Runs
 Enable (detected no active VPNs):
