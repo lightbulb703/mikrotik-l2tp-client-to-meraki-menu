@@ -2,18 +2,18 @@
 
 Scenario:
 You configure your Mikrotik router to be a L2TP Client to a Meraki. You may
-have a few L2TP clients setup this way. This interactive script (only
-via **ssh** or **telnet**) will search for clients and enable or disable the
-one you select.
+  have a few L2TP clients setup this way. This interactive script (only
+  via **ssh** or **telnet**) will search for clients and enable or disable the
+  one you select.
 
 The script identifies clients by the comment on the L2TP interface, NAT rule
-and Routes. Therefore, the comment must be exactly the same on all three types.
+  and Routes. Therefore, the comment must be exactly the same on all three types.
 
 The L2TP interfaces need to use a profile named **meraki** for the detection
-to work (setup below).
+  to work (setup below).
 
 The script will check for an active VPN first, which must be disabled prior
-to enabling a new VPN.
+  to enabling a new VPN.
 
 ## Prerequisite setup
 Common Settings (this should always be enabled, firewall rule preference may
@@ -22,15 +22,18 @@ Common Settings (this should always be enabled, firewall rule preference may
     # Meraki profile
     /ppp profile add name=meraki use-encryption=required use-ipv6=no \
      use-mpls=no
+
     # Set ipsec profile and proposal, 3des and aes128, group2 and group5
     /ip ipsec profile set [ find default=yes ] dh-group=modp1536,modp1024 \
      lifetime=8h
     /ip ipsec proposal set [ find default=yes ] \
      enc-algorithms=aes-128-cbc,3des lifetime=8h pfs-group=none
+
     # Mark routing for traffic from only allowed sources
     /ip firewall mangle add action=mark-routing chain=prerouting \
      comment="Leave this enabled always" new-routing-mark=merakivpns \
      passthrough=yes src-address-list="Source VPN Addresses"
+
     # Address List
     # Sample of two shown below. Use as many or as few as needed.
     /ip firewall address-list add address=LOCALADDRESS1 \
