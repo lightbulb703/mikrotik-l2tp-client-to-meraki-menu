@@ -22,7 +22,7 @@ Common Settings (this should always be enabled, firewall rule preference may
     # Meraki profile
     /ppp profile add name=meraki use-encryption=required use-ipv6=no \
      use-mpls=no
-    # Set ipsec profile and proposal, 3des and aes128, group2 or group5
+    # Set ipsec profile and proposal, 3des and aes128, group2 and group5
     /ip ipsec profile set [ find default=yes ] dh-group=modp1536,modp1024 \
      lifetime=8h
     /ip ipsec proposal set [ find default=yes ] \
