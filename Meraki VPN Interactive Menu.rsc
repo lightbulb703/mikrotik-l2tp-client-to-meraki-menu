@@ -242,7 +242,7 @@ if (!$skipEnable) do={
     }
     :set i ($i+1)
   }
-  :put "   X.   Exit"
+  :put "   X.  Exit"
 
   # Decide which client to enable
   :put "What client would you like to enable? (1-$numOfClients or eXit)"
