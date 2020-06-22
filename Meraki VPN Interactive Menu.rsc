@@ -1,6 +1,6 @@
 # Meraki VPN Interactive Menu
 # Enable a L2TP client configured to connect to a Meraki from a Mikrotik Router
-# Version 0.1.0
+# Version 0.1.1
 # Author: Dennis Cole III
 # License: MIT
 #
@@ -235,10 +235,14 @@ if (!$skipEnable) do={
   :local numOfClients [ :len $merakiClientsbyName ]
   :put "List of Meraki L2TP Clients"
   foreach clientName in $merakiClientsbyName do={
-    :put "  $i.   $clientName"
+    if (i < 10) do={
+      :put "   $i.  $clientName"
+    } else={
+      :put "  $i.  $clientName"
+    }
     :set i ($i+1)
   }
-  :put "  X.   Exit"
+  :put "   X.   Exit"
 
   # Decide which client to enable
   :put "What client would you like to enable? (1-$numOfClients or eXit)"

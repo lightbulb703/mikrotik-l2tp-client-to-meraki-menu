@@ -73,12 +73,12 @@ Per Client Settings (firewall rule preference may need to be adjusted):
 Enable (detected no active VPNs):
 
     List of Meraki L2TP Clients
-      1.   Client A
-      2.   Client B
-      3.   Client C
-      4.   Client D
-      5.   Client E
-      X.   Exit
+      1.  Client A
+      2.  Client B
+      3.  Client C
+      4.  Client D
+      5.  Client E
+      X.  Exit
     What client would you like to enable? (1-5 or eXit)
     value: 4
     Enabling L2TP Client for Client D...OK!
