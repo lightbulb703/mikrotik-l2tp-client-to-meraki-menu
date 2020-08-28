@@ -1,6 +1,6 @@
 # Meraki VPN Interactive Menu
 # Enable a L2TP client configured to connect to a Meraki from a Mikrotik Router
-# Version 0.1.1
+# Version 0.1.2
 # Author: Dennis Cole III
 # License: MIT
 #
@@ -166,9 +166,21 @@
       :put ("Routes changes" . $failed)
     }
   }
+
+  # Verification
   if ($l2tpInterfaceChangeStatus && $natRuleChangeStatus && \
     $allRoutesChangeStatus) do={
-    :put ("All rules for $clientName have been $lowerPrefix" . "abled!")
+    :put ("All rules for $clientName have been $lowerPrefix" . "abled" . $done)
+    if ($change="enable") do={
+      :put ("Checking status of the VPN Connection...")
+      :delay 5s
+      :local vpnIsUp [/interface l2tp-client get [find comment=$clientName] running]
+      if ($vpnIsUp) do={
+        :put ("VPN Connection is UP!")
+      } else={
+        :put ("VPN Connection is not yet up. You may need to check your settings.")
+      }
+    }
   } else={
     if ($l2tpInterfaceChangeStatus || $natRuleChangeStatus || \
       $allRoutesChangeStatus) do={
