@@ -87,11 +87,12 @@ Enable (detected no active VPNs):
       - 10.0.0.0/11....OK!
       - 192.168.0.0/19....OK!
     Route changes..OK!
+    Checking status of the VPN connection...
     All rules for Client D have been enabled!
 
 Disable (active VPN detected, will ask if you want to enable a new VPN):
 
-    Client D Backup is currently enabled. Would you like to disable (Y/n)?
+    Client D Backup is currently enabledand the VPN connection is UP! Would you like to disable (Y/n)?
     value: y
     Disabling L2TP Client for Client D...OK!
     Disabling NAT rule for Client D...OK!

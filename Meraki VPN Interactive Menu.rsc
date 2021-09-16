@@ -172,13 +172,23 @@
     $allRoutesChangeStatus) do={
     :put ("All rules for $clientName have been $lowerPrefix" . "abled" . $done)
     if ($change="enable") do={
-      :put ("Checking status of the VPN Connection...")
-      :delay 5s
-      :local vpnIsUp [/interface l2tp-client get [find comment=$clientName] running]
-      if ($vpnIsUp) do={
-        :put ("VPN Connection is UP!")
-      } else={
-        :put ("VPN Connection is not yet up. You may need to check your settings.")
+      :put ("Checking status of the VPN connection...")
+      :local numberOfChecks 0
+      :local vpnIsUp
+      while ($numberOfChecks < 5) do={
+        :delay 5s
+        :set vpnIsUp [/interface l2tp-client get [find comment=$clientName] running]
+        if ($vpnIsUp) do={
+          :put ("VPN connection is UP!")
+          :set $numberOfChecks 5
+        } else={
+          :set $numberOfChecks ($numberOfChecks+1)
+          if ($numberOfChecks < 5) do={
+           :put ("VPN connection is not yet up. Try $numberOfChecks of 5 tries...")
+          } else={
+           :put ("VPN connection is not yet up. You may need to check your settings.")
+          }
+        }
       }
     }
   } else={
@@ -210,7 +220,12 @@ foreach merakiClient in=$merakiL2tpActive do={
     [find where .id=$merakiClient] value-name=comment]
 
   # Ask to disable Active Client
-  :put "$clientName is currently enabled. Would you like to disable (Y/n)?"
+  :local vpnIsUp [/interface l2tp-client get [find comment=$clientName] running]
+   if ($vpnIsUp) do={
+      :put "$clientName is currently enabled and the VPN connection is UP! Would you like to disable (Y/n)?"
+   } else={
+      :put "$clientName is currently enabled, however the VPN connection is down. Would you like to disable (Y/n)?"
+   }
   :local userinput [$read]
   if ( $userinput = "n" || $userinput = "N") do={
     # We don't want to disable so we will end the script
